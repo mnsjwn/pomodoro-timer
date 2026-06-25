@@ -8,5 +8,8 @@ body,
 
 body {
   margin: 0;
-  font-family: 'Pretendard', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: 'Pretendard Variable', 'Pretendard', system-ui, -apple-system,
+    'Segoe UI', 'Apple SD Gothic Neo', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

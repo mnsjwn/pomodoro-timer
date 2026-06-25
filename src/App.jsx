@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Play,
   Pause,
@@ -134,125 +134,139 @@ export default function PomodoroTimer() {
 
   const totalSec = (isBreak ? breakMin : workMin) * 60;
   const progress = totalSec > 0 ? 1 - timeLeft / totalSec : 0;
+  const ringLen = 2 * Math.PI * 45;
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[#f5f4f0] text-gray-700 font-sans p-4">
+    <div className="flex items-center justify-center min-h-screen bg-[#f5f4f0] text-gray-700 font-sans p-4 landscape:p-6">
       <div
-        className={`relative p-10 rounded-3xl shadow-[8px_8px_16px_#e4e2dd,-8px_-8px_16px_#ffffff] w-80 text-center transition-colors duration-500 ${containerBg}`}
+        className={`relative rounded-3xl shadow-[8px_8px_16px_#e4e2dd,-8px_-8px_16px_#ffffff] text-center transition-colors duration-500 ${containerBg}
+          w-80 p-10
+          landscape:w-[92vw] landscape:max-w-5xl landscape:min-h-[80vh] landscape:p-14
+          landscape:flex landscape:flex-row landscape:items-center landscape:justify-center landscape:gap-16`}
       >
         {/* 설정 버튼 */}
         <button
           onClick={() => setShowSettings((s) => !s)}
-          className="absolute top-5 right-5 text-gray-400 hover:text-gray-600 transition-colors"
+          className="absolute top-5 right-5 text-gray-400 hover:text-gray-600 transition-colors z-10"
           aria-label="시간 설정"
         >
-          {showSettings ? <X className="w-5 h-5" /> : <Settings className="w-5 h-5" />}
+          {showSettings ? <X className="w-6 h-6" /> : <Settings className="w-6 h-6" />}
         </button>
 
-        <div className="flex justify-center mb-4">
-          {isBreak ? (
-            <Coffee className={`w-8 h-8 ${textColor}`} />
-          ) : (
-            <BookOpen className={`w-8 h-8 ${textColor}`} />
-          )}
-        </div>
+        {/* ── 왼쪽: 타이머 시각 영역 ── */}
+        <div className="landscape:flex-1 landscape:flex landscape:flex-col landscape:items-center">
+          <div className="flex justify-center mb-4">
+            {isBreak ? (
+              <Coffee className={`w-8 h-8 landscape:w-12 landscape:h-12 ${textColor}`} />
+            ) : (
+              <BookOpen className={`w-8 h-8 landscape:w-12 landscape:h-12 ${textColor}`} />
+            )}
+          </div>
 
-        <h2 className="text-xl font-semibold mb-6 tracking-wide text-gray-600">
-          {isBreak ? '휴식 시간' : '집중 시간'}
-        </h2>
+          <h2 className="text-xl landscape:text-3xl font-semibold mb-6 landscape:mb-10 tracking-wide text-gray-600">
+            {isBreak ? '휴식 시간' : '집중 시간'}
+          </h2>
 
-        {/* 원형 진행 링 + 남은 시간 */}
-        <div className="relative w-48 h-48 mx-auto mb-8">
-          <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-            <circle
-              cx="50"
-              cy="50"
-              r="45"
-              fill="none"
-              strokeWidth="5"
-              className="stroke-gray-200/70"
-            />
-            <circle
-              cx="50"
-              cy="50"
-              r="45"
-              fill="none"
-              strokeWidth="5"
-              strokeLinecap="round"
-              className={`${isBreak ? 'stroke-sky-300' : 'stroke-rose-300'} transition-all duration-500`}
-              strokeDasharray={2 * Math.PI * 45}
-              strokeDashoffset={2 * Math.PI * 45 * (1 - progress)}
-            />
-          </svg>
-          <div
-            className={`absolute inset-0 flex items-center justify-center text-5xl font-bold tracking-wider ${textColor}`}
-          >
-            {formatTime(timeLeft)}
+          {/* 원형 진행 링 + 남은 시간 */}
+          <div className="relative w-48 h-48 mx-auto mb-8 landscape:w-72 landscape:h-72 landscape:mb-0 lg:landscape:w-80 lg:landscape:h-80">
+            <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+              <circle
+                cx="50"
+                cy="50"
+                r="45"
+                fill="none"
+                strokeWidth="5"
+                className="stroke-gray-200/70"
+              />
+              <circle
+                cx="50"
+                cy="50"
+                r="45"
+                fill="none"
+                strokeWidth="5"
+                strokeLinecap="round"
+                className={`${isBreak ? 'stroke-sky-300' : 'stroke-rose-300'} transition-all duration-500`}
+                strokeDasharray={ringLen}
+                strokeDashoffset={ringLen * (1 - progress)}
+              />
+            </svg>
+            <div
+              className={`absolute inset-0 flex items-center justify-center text-5xl landscape:text-7xl font-bold tracking-wider tabular-nums ${textColor}`}
+            >
+              {formatTime(timeLeft)}
+            </div>
           </div>
         </div>
 
-        <div className="flex justify-center gap-6 mb-8">
-          <button
-            onClick={toggleTimer}
-            className={`p-4 rounded-full shadow-sm transition-all ${buttonBg} text-gray-700`}
-            aria-label={isActive ? '일시정지' : '시작'}
-          >
-            {isActive ? (
-              <Pause className="w-6 h-6" />
-            ) : (
-              <Play className="w-6 h-6 ml-1" />
-            )}
-          </button>
-          <button
-            onClick={resetTimer}
-            className="p-4 rounded-full bg-stone-200 hover:bg-stone-300 shadow-sm transition-all text-gray-600"
-            aria-label="리셋"
-          >
-            <RotateCcw className="w-6 h-6" />
-          </button>
-        </div>
-
-        <div className="pt-4 border-t border-gray-200/50">
-          <p className="text-sm text-gray-500 font-medium">
-            오늘 완료한 집중 세션:{' '}
-            <span className="font-bold text-gray-700">{sessions}</span>번
-          </p>
-        </div>
-
-        {/* 설정 패널 */}
-        {showSettings && (
-          <div className="absolute inset-0 rounded-3xl bg-[#f5f4f0]/95 backdrop-blur-sm p-8 flex flex-col justify-center gap-6">
-            <h3 className="text-lg font-semibold text-gray-600">시간 설정</h3>
-
-            <Stepper
-              label="집중 시간"
-              unit="분"
-              value={workMin}
-              accent="rose"
-              onChange={applyWork}
-              disabled={isActive}
-            />
-            <Stepper
-              label="휴식 시간"
-              unit="분"
-              value={breakMin}
-              accent="sky"
-              onChange={applyBreak}
-              disabled={isActive}
-            />
-
-            <p className="text-xs text-gray-400 leading-relaxed">
-              {isActive
-                ? '타이머를 멈춘 뒤 시간을 변경할 수 있어요.'
-                : '1~120분 사이로 조절할 수 있어요. 과목·컨디션에 맞게 설정해 보세요.'}
-            </p>
-
+        {/* ── 오른쪽: 컨트롤 영역 ── */}
+        <div className="landscape:flex-1 landscape:flex landscape:flex-col landscape:items-center landscape:justify-center">
+          <div className="flex justify-center gap-6 landscape:gap-10 mb-8 landscape:mb-12">
             <button
-              onClick={() => setShowSettings(false)}
-              className="mt-2 py-2 rounded-xl bg-stone-200 hover:bg-stone-300 text-gray-600 text-sm font-medium transition-colors"
+              onClick={toggleTimer}
+              className={`p-4 landscape:p-6 rounded-full shadow-sm transition-all ${buttonBg} text-gray-700`}
+              aria-label={isActive ? '일시정지' : '시작'}
             >
-              완료
+              {isActive ? (
+                <Pause className="w-6 h-6 landscape:w-9 landscape:h-9" />
+              ) : (
+                <Play className="w-6 h-6 ml-1 landscape:w-9 landscape:h-9" />
+              )}
             </button>
+            <button
+              onClick={resetTimer}
+              className="p-4 landscape:p-6 rounded-full bg-stone-200 hover:bg-stone-300 shadow-sm transition-all text-gray-600"
+              aria-label="리셋"
+            >
+              <RotateCcw className="w-6 h-6 landscape:w-9 landscape:h-9" />
+            </button>
+          </div>
+
+          <div className="pt-4 border-t border-gray-200/50 landscape:border-t-0 landscape:pt-0 w-full landscape:w-auto">
+            <p className="text-sm landscape:text-base text-gray-500 font-medium">
+              오늘 완료한 집중 세션:{' '}
+              <span className="font-bold text-gray-700 landscape:text-xl">{sessions}</span>번
+            </p>
+          </div>
+        </div>
+
+        {/* 설정 패널 (가로/세로 공통 오버레이) */}
+        {showSettings && (
+          <div className="absolute inset-0 rounded-3xl bg-[#f5f4f0]/95 backdrop-blur-sm flex flex-col items-center justify-center gap-6 px-8 z-20">
+            <div className="w-full max-w-sm flex flex-col gap-6">
+              <h3 className="text-lg landscape:text-2xl font-semibold text-gray-600 text-center">
+                시간 설정
+              </h3>
+
+              <Stepper
+                label="집중 시간"
+                unit="분"
+                value={workMin}
+                accent="rose"
+                onChange={applyWork}
+                disabled={isActive}
+              />
+              <Stepper
+                label="휴식 시간"
+                unit="분"
+                value={breakMin}
+                accent="sky"
+                onChange={applyBreak}
+                disabled={isActive}
+              />
+
+              <p className="text-xs landscape:text-sm text-gray-400 leading-relaxed text-center">
+                {isActive
+                  ? '타이머를 멈춘 뒤 시간을 변경할 수 있어요.'
+                  : '1~120분 사이로 조절할 수 있어요. 과목·컨디션에 맞게 설정해 보세요.'}
+              </p>
+
+              <button
+                onClick={() => setShowSettings(false)}
+                className="py-2 rounded-xl bg-stone-200 hover:bg-stone-300 text-gray-600 text-sm font-medium transition-colors"
+              >
+                완료
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -291,7 +305,7 @@ function Stepper({ label, unit, value, onChange, accent, disabled }) {
             max="120"
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            className={`w-14 bg-transparent text-center text-2xl font-bold outline-none rounded-lg focus:ring-2 ${ring}`}
+            className={`w-14 bg-transparent text-center text-2xl font-bold outline-none rounded-lg focus:ring-2 tabular-nums ${ring}`}
           />
           <span className="text-sm text-gray-400">{unit}</span>
         </div>
