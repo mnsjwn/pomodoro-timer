@@ -163,7 +163,7 @@ export default function PomodoroTimer() {
             )}
           </div>
 
-          <h2 className="text-xl landscape:text-3xl font-semibold mb-6 landscape:mb-10 tracking-wide text-gray-600">
+          <h2 className="text-xl landscape:text-3xl font-extrabold mb-6 landscape:mb-10 tracking-wide text-gray-700">
             {isBreak ? '휴식 시간' : '집중 시간'}
           </h2>
 
@@ -191,7 +191,7 @@ export default function PomodoroTimer() {
               />
             </svg>
             <div
-              className={`absolute inset-0 flex items-center justify-center text-5xl landscape:text-7xl font-bold tracking-wider tabular-nums ${textColor}`}
+              className={`absolute inset-0 flex items-center justify-center text-5xl landscape:text-7xl font-extrabold tracking-wider tabular-nums ${textColor}`}
             >
               {formatTime(timeLeft)}
             </div>
@@ -222,9 +222,9 @@ export default function PomodoroTimer() {
           </div>
 
           <div className="pt-4 border-t border-gray-200/50 landscape:border-t-0 landscape:pt-0 w-full landscape:w-auto">
-            <p className="text-sm landscape:text-base text-gray-500 font-medium">
+            <p className="text-sm landscape:text-base text-gray-600 font-bold">
               오늘 완료한 집중 세션:{' '}
-              <span className="font-bold text-gray-700 landscape:text-xl">{sessions}</span>번
+              <span className="font-extrabold text-gray-800 landscape:text-xl">{sessions}</span>번
             </p>
           </div>
         </div>
@@ -233,7 +233,7 @@ export default function PomodoroTimer() {
         {showSettings && (
           <div className="absolute inset-0 rounded-3xl bg-[#f5f4f0]/95 backdrop-blur-sm flex flex-col items-center justify-center gap-6 px-8 z-20">
             <div className="w-full max-w-sm flex flex-col gap-6">
-              <h3 className="text-lg landscape:text-2xl font-semibold text-gray-600 text-center">
+              <h3 className="text-lg landscape:text-2xl font-extrabold text-gray-700 text-center">
                 시간 설정
               </h3>
 
@@ -288,7 +288,7 @@ function Stepper({ label, unit, value, onChange, accent, disabled }) {
   return (
     <div className={disabled ? 'opacity-50 pointer-events-none' : ''}>
       <div className="flex items-center justify-between mb-2">
-        <span className="text-sm text-gray-500">{label}</span>
+        <span className="text-sm font-bold text-gray-600">{label}</span>
       </div>
       <div className="flex items-center justify-center gap-3">
         <button
